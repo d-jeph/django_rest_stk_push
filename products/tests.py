@@ -51,3 +51,21 @@ class GetSingleProductTest(TestCase):
         response = client.get(
             reverse('get_delete_update_product', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+
+class CreateNewProductTest(TestCase):
+    """ Test module for inserting a new puppy """
+
+    def setUp(self):
+        self.valid_payload = {
+            'name':'Iphone X', 'description':'Apple Iphone X 128gb', 'price':'125000'
+        }
+
+    def test_create_valid_product(self):
+        response = client.post(
+            reverse('get_products'),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
