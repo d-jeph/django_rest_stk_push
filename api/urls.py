@@ -15,10 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from rest_framework.schemas import get_schema_view
+from rest_framework_swagger.renderers import SwaggerUIRenderer, OpenAPIRenderer
+#schema_view = get_swagger_view(title="API Swagger Docs")
+
+schema_view = get_schema_view(title='API Docs', renderer_classes=[OpenAPIRenderer, SwaggerUIRenderer])
 
 urlpatterns = [
 	path('products/',include('products.urls')),
 	path('daraja/',include('daraja.urls')),
+    path('docs/', schema_view,name="docs"),
     path('admin/', admin.site.urls),
+
 
 ]

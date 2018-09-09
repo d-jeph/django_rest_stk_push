@@ -12,6 +12,8 @@ from . import helpers
 from api import common
 Common=common.CommonContainer()
 logger=Common._get_logger()
+from rest_framework_swagger import renderers
+from rest_framework.decorators import api_view, renderer_classes
 
 
 
@@ -23,9 +25,16 @@ def GenerateAccessToken():
   return token
   #return data
 
+@api_view(['GET'])
+@renderer_classes([renderers.OpenAPIRenderer, renderers.SwaggerUIRenderer])
 def MakePayment(request):
+  """
+  get:
+      Make dummy Lipa na Mpesa Payment(All test parameters have been provided)
+  """
   access_token=GenerateAccessToken()
   BusinessShortCode="174379"
+  Amount = 2500
 
   pass_key=settings.PASS_KEY
   callback_url="%s%s" %(settings.NGROK,'daraja/confirm_payment')
@@ -40,7 +49,7 @@ def MakePayment(request):
     "Password": Password,
     "Timestamp": timestamp,
     "TransactionType": "CustomerPayBillOnline",
-    "Amount": "2500",
+    "Amount": Amount,
     "PartyA": "254708374149",
     "PartyB": BusinessShortCode,
     "PhoneNumber": "254708374149",
@@ -54,7 +63,12 @@ def MakePayment(request):
   logger.info(str(type(res)))
   logger.info (res.get("ResponseCode"))
   logger.info (res.get("ResponseDescription"))
-  return HttpResponse(res.get("ResponseCode"))
+  response_code=res.get("ResponseCode")
+  if response_code == "0":
+    data={"Status":"Payment of %s to %s was successfull" %(Amount,BusinessShortCode)}
+  else:
+    data={"Status:Payment failed. Please try again later"}
+  return JsonResponse(data)
 
 def CofirmPayment(request):
   return HttpResponse(request)

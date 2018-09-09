@@ -7,6 +7,13 @@ from .serializers import ProductSerializer
 
 
 class ProductList(APIView):
+    """
+    get:
+        Return all products.
+
+    post:
+        Create a new product.
+    """
     def get(self, request, format=None):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
@@ -22,6 +29,16 @@ class ProductList(APIView):
 #product detail view
 
 class ProductDetail(APIView):
+    """
+    get:
+        Return a single product.
+
+    put:
+        Update product details.
+
+    delete:
+        Delete an existing product.
+    """
     def get_object(self, pk):
         try:
             return Product.objects.get(pk=pk)
